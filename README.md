@@ -9,7 +9,6 @@ PhotoArk is a web interface for viewing photos.
 Inside the PhotoArk directory:
 
 - `bower install` - download web components.
-- `go get` - download Go dependencies.
 - `go generate` - bundle the static folder for embedding.
 - `go run main.go static.go -photoDir photos -cacheDir cache`
 
