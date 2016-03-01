@@ -6,7 +6,11 @@ PhotoArk is a web interface for viewing photos.
 
 `go get github.com/kochman/PhotoArk`
 
-Inside the PhotoArk directory, run `go generate` to bundle the static folder for embedding. Then, to run PhotoArk: `go run main.go static.go -photoDir photos -cacheDir cache`. Replace `photos` and `cache` with paths to photo and cache directories, respectively.
+Inside the PhotoArk directory:
+
+- `bower install` - download web components.
+- `go generate` - bundle the static folder for embedding.
+- `go run main.go static.go -photoDir photos -cacheDir cache`
 
 ## Metadata
 
