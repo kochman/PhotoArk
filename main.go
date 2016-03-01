@@ -234,7 +234,7 @@ func main() {
 
 	go walk()
 
-	http.Handle("/", http.FileServer(FS(true))) // esc for static content. true uses local files, false uses embedded
+	http.Handle("/", http.FileServer(FS(false))) // esc for static content. true uses local files, false uses embedded
 	http.HandleFunc("/photo/", handlePhoto)
 	http.HandleFunc("/thumb/", handleThumb)
 
