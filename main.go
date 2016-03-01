@@ -31,14 +31,6 @@ type metadata struct {
 	Directory    string `json:"-" structs:"directory"`
 }
 
-func handleIndex(w http.ResponseWriter, r *http.Request) {
-	enc := json.NewEncoder(w)
-	if err := enc.Encode(dirToMetadata); err != nil {
-		log.Print(err)
-		return
-	}
-}
-
 func handleFilters(w http.ResponseWriter, r *http.Request) {
 	keys := []string{"Event", "Photographer", "Date", "Location"}
 
