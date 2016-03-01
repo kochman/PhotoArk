@@ -13,6 +13,10 @@ Inside the PhotoArk directory:
 - `go generate` - bundle the static folder for embedding.
 - `go run main.go static.go -photoDir photos -cacheDir cache`
 
+To build a binary, do the above, and then:
+
+`go build`
+
 ## Metadata
 
 PhotoArk looks for `metadata.yaml` files inside folders in `photoDir`. These metadata files allow users to filter photos. An example metadata file:
