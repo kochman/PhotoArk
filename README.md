@@ -1,5 +1,7 @@
 # PhotoArk
 
+[![Build Status](https://travis-ci.org/kochman/PhotoArk.svg?branch=master)](https://travis-ci.org/kochman/PhotoArk)
+
 PhotoArk is a web interface for viewing photos.
 
 ## Running
