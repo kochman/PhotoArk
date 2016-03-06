@@ -63,6 +63,7 @@ func handleFilters(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	enc := json.NewEncoder(w)
 	if err := enc.Encode(jFilters); err != nil {
 		log.Print(err)
@@ -121,6 +122,7 @@ func handleFilter(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	enc := json.NewEncoder(w)
 	if err := enc.Encode(eligiblePhotos); err != nil {
 		log.Print(err)
