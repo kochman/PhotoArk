@@ -237,11 +237,14 @@ func main() {
 
 	go walk()
 
-	http.Handle("/", http.FileServer(FS(false))) // esc for static content. true uses local files, false uses embedded
+	// esc for static content. true uses local files, false uses embedded
+	http.Handle("/", http.FileServer(FS(false)))
+
 	http.HandleFunc("/photo/", handlePhoto)
 	http.HandleFunc("/thumb/", handleThumb)
 
 	http.HandleFunc("/api/filters", handleFilters)
 	http.HandleFunc("/api/filter", handleFilter)
+
 	http.ListenAndServe("127.0.0.1:8000", nil)
 }
