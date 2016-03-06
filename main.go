@@ -121,6 +121,7 @@ func handleFilter(w http.ResponseWriter, r *http.Request) {
 			eligiblePhotos = append(eligiblePhotos, photo)
 		}
 	}
+	sort.Strings(eligiblePhotos)
 
 	w.Header().Set("Content-Type", "application/json")
 	enc := json.NewEncoder(w)
