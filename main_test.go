@@ -33,7 +33,7 @@ func TestFilters(t *testing.T) {
 		Location:     "Test Location",
 		Event:        "Test Event",
 	}
-	dirToMetadata["Test Directory"] = m
+	dirToMetadata.Put("Test Directory", m)
 
 	// // set up test photos
 	// for i := 1; i < 10; i++ {
@@ -74,7 +74,7 @@ func TestFilters(t *testing.T) {
 		Location:     "Test Location",
 		Event:        "Test Event 2",
 	}
-	dirToMetadata["Test Directory 2"] = m
+	dirToMetadata.Put("Test Directory 2", m)
 
 	m = metadata{
 		Directory:    "Test Directory 3",
@@ -83,7 +83,7 @@ func TestFilters(t *testing.T) {
 		Location:     "Test Location 2",
 		Event:        "Test Event",
 	}
-	dirToMetadata["Test Directory 3"] = m
+	dirToMetadata.Put("Test Directory 3", m)
 
 	req, _ = http.NewRequest("GET", "", nil)
 	w = httptest.NewRecorder()
@@ -133,17 +133,17 @@ func TestFilter(t *testing.T) {
 	for i := 1; i < 10; i++ {
 		filename := "photo" + strconv.Itoa(i) + ".jpg"
 		filename = filepath.Join("Test Directory", filename)
-		photos[filename] = struct{}{}
+		photos.Put(filename, struct{}{})
 	}
 	for i := 10; i < 20; i++ {
 		filename := "photo" + strconv.Itoa(i) + ".jpg"
 		filename = filepath.Join("Test Directory 2", filename)
-		photos[filename] = struct{}{}
+		photos.Put(filename, struct{}{})
 	}
 	for i := 20; i < 30; i++ {
 		filename := "photo" + strconv.Itoa(i) + ".jpg"
 		filename = filepath.Join("Test Directory 3", filename)
-		photos[filename] = struct{}{}
+		photos.Put(filename, struct{}{})
 	}
 
 	req, _ := http.NewRequest("GET", "?Photographer=Test+Photographer", nil)

@@ -20,9 +20,8 @@ import (
 )
 
 var photosMutex = &sync.Mutex{}
-var photos = make(map[string]struct{})
-var dirToMetadataMutex = &sync.Mutex{}
-var dirToMetadata = make(map[string]metadata)
+var photos = NewSyncMap()
+var dirToMetadata = NewSyncMap()
 var photoDir string
 var cacheDir string
 
@@ -42,8 +41,7 @@ func handleFilters(w http.ResponseWriter, r *http.Request) {
 		filters[k] = make(map[string]struct{})
 	}
 
-	dirToMetadataMutex.Lock()
-	for _, meta := range dirToMetadata {
+	for meta := range dirToMetadata.Values() {
 		m := structs.Map(meta)
 		for _, k := range keys {
 			if _, ok := m[k]; ok {
@@ -51,7 +49,6 @@ func handleFilters(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	dirToMetadataMutex.Unlock()
 
 	jFilters := make(map[string][]string)
 	for _, k := range keys {
@@ -86,8 +83,8 @@ func handleFilter(w http.ResponseWriter, r *http.Request) {
 
 	// find all directories with matching filters
 	for filterKey, filterValues := range filters {
-		dirToMetadataMutex.Lock()
-		for dir, meta := range dirToMetadata {
+		for dir := range dirToMetadata.Keys() {
+			meta := dirToMetadata.Get(dir)
 			m := structs.Map(meta)
 			for k, v := range m {
 				if filterKey == k {
@@ -99,7 +96,6 @@ func handleFilter(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
-		dirToMetadataMutex.Unlock()
 	}
 
 	// find intersection of all filter matches
@@ -122,14 +118,12 @@ func handleFilter(w http.ResponseWriter, r *http.Request) {
 	}
 
 	eligiblePhotos := make([]string, 0)
-	photosMutex.Lock()
-	for photo := range photos {
+	for photo := range photos.Keys() {
 		dir := filepath.Dir(photo)
 		if _, ok := eligible[dir]; ok {
 			eligiblePhotos = append(eligiblePhotos, photo)
 		}
 	}
-	photosMutex.Unlock()
 	sort.Strings(eligiblePhotos)
 
 	w.Header().Set("Content-Type", "application/json")
@@ -224,14 +218,10 @@ func walkFunc(path string, info os.FileInfo, err error) error {
 		}
 
 		err = yaml.Unmarshal(data, &m)
-		dirToMetadataMutex.Lock()
-		dirToMetadata[dir] = m
-		dirToMetadataMutex.Unlock()
+		dirToMetadata.Put(dir, m)
 	} else if filepath.Ext(filename) == ".jpg" {
 		filename = filepath.Join(dir, filename)
-		photosMutex.Lock()
-		photos[filename] = struct{}{}
-		photosMutex.Unlock()
+		photos.Put(filename, struct{}{})
 	}
 	return nil
 }

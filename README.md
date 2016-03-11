@@ -13,7 +13,7 @@ Inside the PhotoArk directory:
 - `bower install` - download web components.
 - `go get github.com/mjibson/esc` - install [esc](https://github.com/mjibson/esc) for embedding static assets.
 - `go generate` - bundle the static folder for embedding.
-- `go run main.go static.go -photoDir photos -cacheDir cache`
+- `go run main.go syncmap.go static.go -photoDir photos -cacheDir cache`
 
 To build a binary, do the above, and then:
 
