@@ -24,6 +24,7 @@ var photos = NewSyncMap()
 var dirToMetadata = NewSyncMap()
 var photoDir string
 var cacheDir string
+var bind string
 
 type metadata struct {
 	Event        string
@@ -236,6 +237,7 @@ func walk() {
 func main() {
 	flag.StringVar(&photoDir, "photoDir", "photos", "path to photos")
 	flag.StringVar(&cacheDir, "cacheDir", "cache", "path to photo cache directory")
+	flag.StringVar(&bind, "bind", "127.0.0.1:8000", "interface and port to bind to")
 	flag.Parse()
 
 	go walk()
@@ -249,5 +251,8 @@ func main() {
 	http.HandleFunc("/api/filters", handleFilters)
 	http.HandleFunc("/api/filter", handleFilter)
 
-	http.ListenAndServe("127.0.0.1:8000", nil)
+	log.Print("listening on ", bind)
+	if err := http.ListenAndServe(bind, nil); err != nil {
+		log.Print(err)
+	}
 }
