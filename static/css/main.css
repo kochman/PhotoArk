@@ -15,6 +15,20 @@ body {
 	font-style: italic;
 }
 
+.modal {
+	display: block;
+	background: rgba(0, 0, 0, 0.8);
+	overflow: scroll;
+}
+
+.modal.ng-hide-add, .modal.ng-hide-remove {
+	transition: all 0.2s cubic-bezier(0.53, 0.43, 0.22, 0.92)
+}
+
+.modal.ng-hide {
+	opacity: 0;
+}
+
 /* Main */
 
 .main {

@@ -135,6 +135,19 @@ func handleFilter(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func handleMetadata(w http.ResponseWriter, r *http.Request) {
+	parentDir := filepath.Dir(r.URL.Query().Get("photo"))
+
+	meta := dirToMetadata.Get(parentDir)
+
+	w.Header().Set("Content-Type", "application/json")
+	enc := json.NewEncoder(w)
+	if err := enc.Encode(meta); err != nil {
+		log.Print(err)
+		return
+	}
+}
+
 func handlePhoto(w http.ResponseWriter, r *http.Request) {
 	if filepath.Ext(r.URL.Path) != ".jpg" {
 		http.Error(w, http.StatusText(404), 404)
@@ -250,6 +263,7 @@ func main() {
 
 	http.HandleFunc("/api/filters", handleFilters)
 	http.HandleFunc("/api/filter", handleFilter)
+	http.HandleFunc("/api/metadata", handleMetadata)
 
 	log.Print("listening on ", bind)
 	if err := http.ListenAndServe(bind, nil); err != nil {

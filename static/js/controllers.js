@@ -1,4 +1,4 @@
-var app = angular.module('app', ['angularLazyImg']);
+var app = angular.module('app', ['angularLazyImg', 'ngAnimate']);
 
 app.controller('HomeCtrl', function($scope, $http, $sce) {
 	$http.get('api/filters').success(function(data) {
@@ -34,5 +34,19 @@ app.controller('HomeCtrl', function($scope, $http, $sce) {
 		$http.get('api/filter', {params: filterParams}).success(function(data) {
 			$scope.photos = data;
 		});
+	}
+
+	$scope.photoDetail = function(photo) {
+		$scope.photoDetailModal = true;
+		$scope.photoDetailModalPhoto = photo;
+		$http.get('api/metadata', {params: {photo: photo}}).success(function(data) {
+			$scope.photoDetailModalMetadata = data;
+		});
+	}
+
+	$scope.closePhotoDetail = function() {
+		$scope.photoDetailModal = false;
+		delete $scope.photoDetailModalPhoto;
+		delete $scope.photoDetailModalMetadata;
 	}
 });

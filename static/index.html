@@ -4,6 +4,7 @@
 		<title>PhotoArk</title>
 		<script src="components/angular/angular.js"></script>
 		<script src="components/angular-lazy-img/release/angular-lazy-img.min.js"></script>
+		<script src="components/angular-animate/angular-animate.min.js"></script>
 		<script src="js/controllers.js"></script>
 		<link rel="stylesheet" type="text/css" href="components/bootstrap/dist/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="css/main.css">
@@ -39,13 +40,30 @@
 				<div class="col-sm-9 col-sm-offset-3 col-md-9 col-md-offset-3 main">
 					<div class="row">
 						<div ng-repeat-start="photo in photos" class="col-xs-6 col-sm-4 photo-container">
-							<a ng-href="photo/{{photo}}">
+							<a ng-click="photoDetail(photo)">
 								<img class="photo" lazy-img="thumb/{{photo}}">
 							</a>
 						</div>
 						<div class="clearfix visible-xs-block" ng-if="$index % 2 == 1"></div>
 						<div class="clearfix visible-sm-block" ng-if="$index % 3 == 2"></div>
 						<div ng-repeat-end=""></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal" ng-show="photoDetailModal" ng-click="closePhotoDetail()">
+			<div class="modal-dialog" ng-click="$event.stopPropagation()">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" ng-click="closePhotoDetail()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Photo detail</h4>
+					</div>
+					<div class="modal-body">
+						<img class="photo" ng-src="photo/{{photoDetailModalPhoto}}">
+						<ul ng-if="photoDetailModalMetadata">
+							<li ng-repeat="(k, v) in photoDetailModalMetadata"><b>{{k}}</b>: {{v}}</li>
+						</ul>
+						<p ng-if="photoDetailModalMetadata['Photographer']">Attribution: {{photoDetailModalMetadata['Photographer']}}/<i>The Polytechnic</i></p>
 					</div>
 				</div>
 			</div>
