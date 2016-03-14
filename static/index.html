@@ -52,18 +52,14 @@
 			</div>
 		</div>
 		<div class="modal" ng-show="photoDetailModal" ng-click="closePhotoDetail()">
-			<div class="modal-dialog" ng-click="$event.stopPropagation()">
+			<div class="modal-dialog modal-lg" ng-click="$event.stopPropagation()">
 				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" ng-click="closePhotoDetail()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title">Photo detail</h4>
-					</div>
 					<div class="modal-body">
 						<img class="photo" ng-src="photo/{{photoDetailModalPhoto}}">
-						<ul ng-if="photoDetailModalMetadata">
+						<p ng-if="photoDetailModalMetadata['Photographer']"><b>Attribution</b>: {{photoDetailModalMetadata['Photographer']}}/<i>The Polytechnic</i></p>
+						<ul ng-if="photoDetailModalMetadata" class="list-unstyled">
 							<li ng-repeat="(k, v) in photoDetailModalMetadata"><b>{{k}}</b>: {{v}}</li>
 						</ul>
-						<p ng-if="photoDetailModalMetadata['Photographer']">Attribution: {{photoDetailModalMetadata['Photographer']}}/<i>The Polytechnic</i></p>
 					</div>
 				</div>
 			</div>
