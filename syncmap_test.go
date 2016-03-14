@@ -115,3 +115,20 @@ func TestSyncMapValues(t *testing.T) {
 	}
 	Expect(values).To(ConsistOf("world", "again"))
 }
+
+func TestSyncMapLen(t *testing.T) {
+	RegisterTestingT(t)
+
+	syncMap := NewSyncMap()
+	Expect(syncMap.Len()).To(Equal(0))
+	syncMap.Put("hello", "world")
+	Expect(syncMap.Len()).To(Equal(1))
+	syncMap.Put("hi", "there")
+	Expect(syncMap.Len()).To(Equal(2))
+	syncMap.Put("hello", "there")
+	Expect(syncMap.Len()).To(Equal(2))
+	syncMap.Delete("hello")
+	Expect(syncMap.Len()).To(Equal(1))
+	syncMap.Delete("hi")
+	Expect(syncMap.Len()).To(Equal(0))
+}
