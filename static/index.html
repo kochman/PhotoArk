@@ -2,6 +2,7 @@
 <html ng-app="app">
 	<head>
 		<title>PhotoArk</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<script src="components/angular/angular.js"></script>
 		<script src="components/angular-lazy-img/release/angular-lazy-img.min.js"></script>
 		<script src="components/angular-animate/angular-animate.min.js"></script>
@@ -12,10 +13,10 @@
 	<body ng-controller="HomeCtrl">
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container-fluid">
-				<div class="navbar-header">
+				<div class="navbar-header pull-left">
 					<a class="navbar-brand">PhotoArk</a>
 				</div>
-				<div>
+				<div class="pull-right">
 					<ul class="nav navbar-nav navbar-right">
 						<li class="italic"><a href="http://poly.news/">The Polytechnic</a></li>
 					</ul>
@@ -46,7 +47,7 @@
 						</div>
 						<div class="clearfix visible-xs-block" ng-if="$index % 2 == 1"></div>
 						<div class="clearfix visible-sm-block" ng-if="$index % 3 == 2"></div>
-						<div ng-repeat-end=""></div>
+						<div ng-repeat-end></div>
 					</div>
 				</div>
 			</div>
@@ -56,9 +57,10 @@
 				<div class="modal-content">
 					<div class="modal-body">
 						<img class="photo" ng-src="photo/{{photoDetailModalPhoto}}">
-						<p ng-if="photoDetailModalMetadata['Photographer']"><b>Attribution</b>: {{photoDetailModalMetadata['Photographer']}}/<i>The Polytechnic</i></p>
-						<ul ng-if="photoDetailModalMetadata" class="list-unstyled">
-							<li ng-repeat="(k, v) in photoDetailModalMetadata"><b>{{k}}</b>: {{v}}</li>
+						<p ng-if="photoDetailModalMetadata['Photographer']" class="photo-attribution text-right">{{photoDetailModalMetadata['Photographer']}}/<i>The Polytechnic</i></p>
+						<dl ng-if="photoDetailModalMetadata" class="dl-horizontal">
+							<dt ng-repeat-start="(k, v) in photoDetailModalMetadata">{{k}}</dt>
+							<dd ng-repeat-end>{{v}}</dd>
 						</ul>
 					</div>
 				</div>
