@@ -3,6 +3,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"github.com/fatih/structs"
@@ -22,6 +23,7 @@ import (
 var photosMutex = &sync.Mutex{}
 var photos = NewSyncMap()
 var dirToMetadata = NewSyncMap()
+var cache *Cache
 var photoDir string
 var cacheDir string
 var bind string
@@ -165,51 +167,36 @@ func handleThumb(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	photoFilepath := filepath.Join(photoDir, r.URL.Path[len("/cache/"):])
-	cacheFilepath := filepath.Join(cacheDir, r.URL.Path[len("/cache/"):])
-
-	if _, err := os.Stat(cacheFilepath); err != nil {
-		if os.IsNotExist(err) {
-			// create thumbnail
-
-			file, err := os.Open(photoFilepath)
-			if err != nil {
-				log.Print(err)
-				return
-			}
-
-			img, err := jpeg.Decode(file)
-			if err != nil {
-				log.Print(err)
-				return
-			}
-			file.Close()
-
-			m := resize.Thumbnail(500, 1000, img, resize.Bicubic)
-
-			parentDir, _ := filepath.Split(cacheFilepath)
-			err = os.MkdirAll(parentDir, os.FileMode(0764))
-			if err != nil {
-				log.Print(err)
-				return
-			}
-
-			out, err := os.Create(cacheFilepath)
-			if err != nil {
-				log.Print(err)
-				return
-			}
-			defer out.Close()
-
-			jpeg.Encode(out, m, nil)
-		} else {
-			log.Print(err)
-			return
-		}
-	}
+	key := r.URL.Path[len("/cache/"):]
+	thumb := cache.Get(key)
 
 	// serve thumbnail
-	http.ServeFile(w, r, cacheFilepath)
+	http.ServeContent(w, r, key, time.Time{}, bytes.NewReader(thumb))
+}
+
+func cacheFillFunc(key string) []byte {
+	// create thumbnail
+
+	photoFilepath := filepath.Join(photoDir, key)
+	file, err := os.Open(photoFilepath)
+	if err != nil {
+		log.Print(err)
+		return nil
+	}
+
+	img, err := jpeg.Decode(file)
+	if err != nil {
+		log.Print(err)
+		return nil
+	}
+	file.Close()
+
+	m := resize.Thumbnail(500, 1000, img, resize.Bicubic)
+
+	out := &bytes.Buffer{}
+
+	jpeg.Encode(out, m, nil)
+	return out.Bytes()
 }
 
 func walkFunc(path string, info os.FileInfo, err error) error {
@@ -250,10 +237,14 @@ func walk() {
 func main() {
 	flag.StringVar(&photoDir, "photoDir", "photos", "path to photos")
 	flag.StringVar(&cacheDir, "cacheDir", "cache", "path to photo cache directory")
+	var cacheSize = flag.Float64("cacheSize", 100, "photo cache size limit in megabytes")
 	flag.StringVar(&bind, "bind", "127.0.0.1:8000", "interface and port to bind to")
 	flag.Parse()
 
 	go walk()
+
+	cache = NewCache(cacheDir, *cacheSize, cacheFillFunc)
+	go cache.PeriodicallyPrune(time.Second * 30)
 
 	// esc for static content. true uses local files, false uses embedded
 	http.Handle("/", http.FileServer(FS(false)))

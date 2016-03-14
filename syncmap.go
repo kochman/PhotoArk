@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/gob"
 	"sync"
 )
 
@@ -35,6 +37,12 @@ func (s *SyncMap) Delete(key string) {
 	s.mutex.Unlock()
 }
 
+func (s *SyncMap) Len() int {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	return len(s.state)
+}
+
 func (s *SyncMap) Keys() chan string {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
@@ -55,4 +63,26 @@ func (s *SyncMap) Values() chan interface{} {
 	}
 	close(values)
 	return values
+}
+
+func (s *SyncMap) GobEncode() (data []byte, err error) {
+	buf := &bytes.Buffer{}
+	enc := gob.NewEncoder(buf)
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	if err := enc.Encode(s.state); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
+func (s *SyncMap) GobDecode(data []byte) error {
+	buf := bytes.NewBuffer(data)
+	dec := gob.NewDecoder(buf)
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	if err := dec.Decode(&s.state); err != nil {
+		return err
+	}
+	return nil
 }
