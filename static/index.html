@@ -53,7 +53,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="modal" ng-show="photoDetailModal" ng-click="closePhotoDetail()">
+
+		<div class="modal photo-detail-modal" ng-show="photoDetailModal && !canIUseModal" ng-click="closePhotoDetail()">
 			<div class="modal-dialog modal-lg" ng-click="$event.stopPropagation()">
 				<div class="modal-content">
 					<div class="modal-body">
@@ -63,6 +64,36 @@
 							<dt ng-repeat-start="(k, v) in photoDetailModalMetadata">{{k}}</dt>
 							<dd ng-repeat-end>{{v}}</dd>
 						</ul>
+						<p ng-click="showCanIUseModal()" class="text-right can-i-use-toggle">
+							Want to use this photo?
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal can-i-use-modal" ng-show="canIUseModal" ng-click="hideCanIUseModal()">
+			<div class="modal-dialog" ng-click="$event.stopPropagation()">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="hideCanIUseModal()"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Using <i>The Polytechnic</i>'s photos</h4>
+					</div>
+					<div class="modal-body">
+						<p><i>The Polytechnic</i> photographs events of relevance to the Rensselaer community. Our goal is to serve you, and to this end, we allow redistribution of our photos under specific circumstances.</p>
+						<p>If you are any of these:</p>
+						<ul>
+							<li>A student at Rensselaer Polytechnic Institute.</li>
+							<li>A member of the Rensselaer Union.</li>
+							<li>Rensselaer Polytechnic Institute faculty or staff.</li>
+						</ul>
+						<p>Then you may use <i>The Polytechnic</i>'s photos under the following conditions:</p>
+						<ul>
+							<li>You provide proper attribution of the photo (e.g. Photographer Name/<i>The Polytechnic</i>) as indicated under each photo.</li>
+							<li>You do not use them for profit or commercial purposes. For example, it is okay to use a photo as your Facebook profile picture (with proper attribution), but you cannot use it in an advertisement.</li>
+							<li>The manner in which the photo is used does not imply any opinion or endorsement of the <i>The Polytechnic</i> Editorial Board.</li>
+						</ul>
+						<p>If you have any questions, do not hesitate to email <a href="mailto:photo@poly.rpi.edu">photo@poly.rpi.edu</a>. We also look forward to hearing any comments or feedback you have about PhotoArk.</p>
 					</div>
 				</div>
 			</div>

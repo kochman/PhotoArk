@@ -125,4 +125,12 @@ app.controller('HomeCtrl', function($scope, $http, $location) {
 		delete $scope.photoDetailModalPhoto;
 		delete $scope.photoDetailModalMetadata;
 	}
+
+	$scope.showCanIUseModal = function() {
+		$scope.canIUseModal = true;
+	}
+
+	$scope.hideCanIUseModal = function() {
+		$scope.canIUseModal = false;
+	}
 });

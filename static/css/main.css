@@ -24,41 +24,90 @@ body {
 
 /* Photo detail modal */
 
-.modal {
+.photo-detail-modal.modal {
 	display: block;
 	background: rgba(0, 0, 0, 0.8);
 	overflow: scroll;
 }
 
-.modal-content {
+.photo-detail-modal .modal-content {
 	background-color: #1a1a1a;
 	color: #9d9d9d;
 	overflow: scroll;
 }
 
-.modal-content .photo {
+.photo-detail-modal .modal-content .photo {
 	margin-bottom: 6px;
 }
 
 @media (max-width: 767px) {
-	.modal-dialog {
+	.photo-detail-modal .modal-dialog {
 		margin-top: 50px;
 		margin-bottom: 50px;
 	}
-	.modal-content dt {
+	.photo-detail-modal .modal-content dt {
 		margin-top: 4px;
 	}
 }
 
-.modal-body {
+.photo-detail-modal .can-i-use-toggle {
+	cursor: pointer;
+}
+
+.photo-detail-modal .modal-body {
 	padding-bottom: 0;
 }
 
-.modal.ng-hide-add, .modal.ng-hide-remove {
-	transition: all 0.2s cubic-bezier(0.53, 0.43, 0.22, 0.92)
+.photo-detail-modal.modal.ng-hide-add, .photo-detail-modal.modal.ng-hide-remove {
+	transition: all 0.2s cubic-bezier(0.53, 0.43, 0.22, 0.92);
 }
 
-.modal.ng-hide {
+.photo-detail-modal.modal.ng-hide {
+	opacity: 0;
+}
+
+/* Can I use modal */
+
+.can-i-use-modal.modal {
+	display: block;
+	background: rgba(0, 0, 0, 0.8);
+	overflow: scroll;
+}
+
+.can-i-use-modal .modal-header {
+	border-bottom: 1px solid #080808;
+}
+
+.can-i-use-modal .modal-header .close {
+	color: #ddd;
+}
+
+.can-i-use-modal .modal-content {
+	background-color: #1a1a1a;
+	color: #9d9d9d;
+	overflow: scroll;
+}
+
+@media (max-width: 767px) {
+	.can-i-use-modal .modal-dialog {
+		margin-top: 50px;
+		margin-bottom: 50px;
+	}
+}
+
+.can-i-use-modal .can-i-use-toggle {
+	cursor: pointer;
+}
+
+.can-i-use-modal .modal-body {
+	/*padding-bottom: 0;*/
+}
+
+.can-i-use-modal.modal.ng-hide-add, .can-i-use-modal.modal.ng-hide-remove {
+	transition: all 0.2s cubic-bezier(0.53, 0.43, 0.22, 0.92);
+}
+
+.can-i-use-modal.modal.ng-hide {
 	opacity: 0;
 }
 
