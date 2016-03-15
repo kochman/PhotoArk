@@ -34,6 +34,7 @@ app.controller('HomeCtrl', function($scope, $http, $location) {
 			}
 		}
 		$scope.filterChanged();
+		$scope.initialized = true;
 	});
 
 	$scope.filterChanged = function() {
@@ -64,6 +65,48 @@ app.controller('HomeCtrl', function($scope, $http, $location) {
 			$scope.photos = [];
 		}
 	}
+
+	$scope.locationChanged = function() {
+		var splitPath = $location.path().split('/');
+		splitPath.shift();  // ignore first because it is empty
+		var activeURLFilters = {}
+		for (var i = 0; i < splitPath.length; ++i) {
+			var split = splitPath[i].split(':');
+			var key = split[0];
+			var val = split[1];
+			if (!activeURLFilters[key]) {
+				activeURLFilters[key] = [];
+			}
+			activeURLFilters[key].push(val);
+		}
+
+		for (var key in $scope.filters) {
+			if (!$scope.filters.hasOwnProperty(key)) {
+				continue;
+			}
+			var filters = $scope.filters[key];
+			for (var i = 0; i < filters.length; i++) {
+				var filter = filters[i];
+				if (activeURLFilters[key]) {
+					if (activeURLFilters[key].indexOf(filter.name) != -1) {
+						filter.enabled = true;
+					} else {
+						filter.enabled = false;
+					}
+				} else {
+					filter.enabled = false;
+				}
+			}
+		}
+
+		$scope.filterChanged();
+	}
+
+	$scope.$on('$locationChangeSuccess', function() {
+		if ($scope.initialized) {
+			$scope.locationChanged();
+		}
+	});
 
 	$scope.photoDetail = function(photo) {
 		$scope.photoDetailModal = true;
