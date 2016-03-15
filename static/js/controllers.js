@@ -1,9 +1,22 @@
 var app = angular.module('app', ['angularLazyImg', 'ngAnimate']);
 
-app.controller('HomeCtrl', function($scope, $http, $sce) {
+app.controller('HomeCtrl', function($scope, $http, $location) {
 	$http.get('api/filters').success(function(data) {
 		$scope.photos = [];
 		$scope.filters = data;
+
+		var splitPath = $location.path().split('/');
+		splitPath.shift();  // ignore first because it is empty
+		var activeURLFilters = {}
+		for (var i = 0; i < splitPath.length; ++i) {
+			var split = splitPath[i].split(':');
+			var key = split[0];
+			var val = split[1];
+			if (!activeURLFilters[key]) {
+				activeURLFilters[key] = [];
+			}
+			activeURLFilters[key].push(val);
+		}
 
 		for (var key in $scope.filters) {
 			if (!$scope.filters.hasOwnProperty(key)) {
@@ -12,12 +25,20 @@ app.controller('HomeCtrl', function($scope, $http, $sce) {
 			var filters = $scope.filters[key];
 			for (var i = 0; i < filters.length; i++) {
 				filters[i] = {name: filters[i], enabled: false};
+				if (activeURLFilters[key]) {
+					var filter = filters[i];
+					if (activeURLFilters[key].indexOf(filter.name) != -1) {
+						filter.enabled = true;
+					}
+				}
 			}
 		}
+		$scope.filterChanged();
 	});
 
 	$scope.filterChanged = function() {
 		var filterParams = {};
+		var newPath = '';
 		for (var key in $scope.filters) {
 			if (!$scope.filters.hasOwnProperty(key)) {
 				continue;
@@ -27,13 +48,21 @@ app.controller('HomeCtrl', function($scope, $http, $sce) {
 			for (var i = 0; i < filters.length; i++) {
 				if (filters[i].enabled) {
 					filterParams[key].push(filters[i].name);
+					newPath += '/' + key + ':' + filters[i].name
 				}
 			}
 		}
 
-		$http.get('api/filter', {params: filterParams}).success(function(data) {
-			$scope.photos = data;
-		});
+		$location.path(newPath);
+
+		// check if filters are not empty
+		if (newPath != '') {
+			$http.get('api/filter', {params: filterParams}).success(function(data) {
+				$scope.photos = data;
+			});
+		} else {
+			$scope.photos = [];
+		}
 	}
 
 	$scope.photoDetail = function(photo) {
