@@ -19,6 +19,8 @@ To build a binary, do the above, and then:
 
 `go build`
 
+The `-devel` flag will force PhotoArk to serve static files off of the disk instead of from the embedded static folder.
+
 ## Metadata
 
 PhotoArk looks for `metadata.yaml` files inside folders in `photoDir`. These metadata files allow users to filter photos. An example metadata file:

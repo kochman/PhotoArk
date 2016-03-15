@@ -27,6 +27,7 @@ var cache *Cache
 var photoDir string
 var cacheDir string
 var bind string
+var devel bool
 
 type metadata struct {
 	Event        string
@@ -176,7 +177,7 @@ func handleThumb(w http.ResponseWriter, r *http.Request) {
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {
 	// pull index.html from esc http.FileSystem
-	file, err := FS(false).Open("/index.html")
+	file, err := FS(devel).Open("/index.html")
 	if err != nil {
 		log.Print(err)
 		return
@@ -256,6 +257,7 @@ func main() {
 	flag.StringVar(&cacheDir, "cacheDir", "cache", "path to photo cache directory")
 	var cacheSize = flag.Float64("cacheSize", 100, "photo cache size limit in megabytes")
 	flag.StringVar(&bind, "bind", "127.0.0.1:8000", "interface and port to bind to")
+	flag.BoolVar(&devel, "devel", false, "enable development mode")
 	flag.Parse()
 
 	go walk()
@@ -265,7 +267,7 @@ func main() {
 
 	// esc for static content. true uses local files, false uses embedded
 	http.HandleFunc("/", handleIndex)
-	http.Handle("/static/", http.StripPrefix("/static", http.FileServer(FS(false))))
+	http.Handle("/static/", http.StripPrefix("/static", http.FileServer(FS(devel))))
 
 	http.HandleFunc("/photo/", handlePhoto)
 	http.HandleFunc("/thumb/", handleThumb)
