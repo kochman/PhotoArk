@@ -1,5 +1,9 @@
 var app = angular.module('app', ['angularLazyImg', 'ngAnimate']);
 
+app.config(function($locationProvider) {
+	$locationProvider.html5Mode(true);
+});
+
 app.controller('HomeCtrl', function($scope, $http, $location) {
 	$http.get('api/filters').success(function(data) {
 		$scope.photos = [];

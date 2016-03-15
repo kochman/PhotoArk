@@ -174,6 +174,23 @@ func handleThumb(w http.ResponseWriter, r *http.Request) {
 	http.ServeContent(w, r, key, time.Time{}, bytes.NewReader(thumb))
 }
 
+func handleIndex(w http.ResponseWriter, r *http.Request) {
+	// pull index.html from esc http.FileSystem
+	file, err := FS(false).Open("/index.html")
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	stat, err := file.Stat()
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	modTime := stat.ModTime()
+
+	http.ServeContent(w, r, "/index.html", modTime, file)
+}
+
 func cacheFillFunc(key string) []byte {
 	// create thumbnail
 
@@ -247,7 +264,8 @@ func main() {
 	go cache.PeriodicallyPrune(time.Second * 30)
 
 	// esc for static content. true uses local files, false uses embedded
-	http.Handle("/", http.FileServer(FS(false)))
+	http.HandleFunc("/", handleIndex)
+	http.Handle("/static/", http.StripPrefix("/static", http.FileServer(FS(false))))
 
 	http.HandleFunc("/photo/", handlePhoto)
 	http.HandleFunc("/thumb/", handleThumb)
