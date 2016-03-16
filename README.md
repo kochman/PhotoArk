@@ -13,13 +13,13 @@ Inside the PhotoArk directory:
 - `bower install` - download web components.
 - `go get github.com/mjibson/esc` - install [esc](https://github.com/mjibson/esc) for embedding static assets.
 - `go generate` - bundle the static folder for embedding.
-- `go run main.go syncmap.go static.go -photoDir photos -cacheDir cache`
+- `go run main.go cache.go syncmap.go static.go`
+
+The `-devel` flag will force PhotoArk to serve static files off of the disk instead of from the embedded static folder. Use the `-help` flag to see other configuration options.
 
 To build a binary, do the above, and then:
 
 `go build`
-
-The `-devel` flag will force PhotoArk to serve static files off of the disk instead of from the embedded static folder.
 
 ## Metadata
 
